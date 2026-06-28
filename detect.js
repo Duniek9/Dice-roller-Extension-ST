@@ -55,6 +55,11 @@ export function initRollDetection(showRollRequest) {
 }
 
 function detectRollRequest(text) {
+    const clean = stripHtml(text).toLowerCase();
+
+    const hasRollWord = /\b(roll|check|saving throw|save)\b/i.test(clean);
+    if (!hasRollWord) return null;
+
     const override = detectActionOverride(clean);
 
     if (override) {
@@ -66,12 +71,6 @@ function detectRollRequest(text) {
             dc: dcMatch ? Number(dcMatch[1]) : null,
         };
     }
-
-    
-    const clean = stripHtml(text).toLowerCase();
-
-    const hasRollWord = /\b(roll|check|saving throw|save)\b/i.test(clean);
-    if (!hasRollWord) return null;
 
     const skill = skills.find(skillName => {
         const regex = new RegExp(`\\b${escapeRegex(skillName)}\\b`, "i");
