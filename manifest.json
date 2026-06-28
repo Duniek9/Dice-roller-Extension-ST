@@ -8,7 +8,7 @@
     "css": "styles.css",
     "author": "Duniek",
     "version": "1.0.0",
-    "homePage": "https://github.com/your/extension",
+    "homePage": "https://github.com/Duniek9/Dice-roller-Extension-ST",
     "auto_update": true,
     "minimum_client_version": "1.0.0",
     "i18n": {

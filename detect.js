@@ -1,5 +1,17 @@
 import { eventSource, event_types, chat } from "../../../../script.js"
 
+const actionOverrides = [
+    { words: ["dodge", "evade", "avoid", "sidestep"], skill: "Dexterity" },
+    { words: ["jump", "climb", "swim", "push", "pull"], skill: "Athletics" },
+    { words: ["heal", "stabilize", "treat wound", "bandage"], skill: "Medicine" },
+    { words: ["teleport", "spell", "magic", "arcane"], skill: "Arcana" },
+    { words: ["hide", "sneak", "move silently"], skill: "Stealth" },
+    { words: ["notice", "spot", "see", "hear", "detect"], skill: "Perception" },
+    { words: ["lie", "deceive", "bluff"], skill: "Deception" },
+    { words: ["persuade", "convince", "talk down"], skill: "Persuasion" },
+    { words: ["intimidate", "threaten", "scare"], skill: "Intimidation" },
+];
+
 const skills = [
     "acrobatics",
     "animal handling",
@@ -43,6 +55,19 @@ export function initRollDetection(showRollRequest) {
 }
 
 function detectRollRequest(text) {
+    const override = detectActionOverride(clean);
+
+    if (override) {
+        const dcMatch = clean.match(/\bdc\s*(\d{1,2})\b/i);
+
+        return {
+            sides: 20,
+            reason: `${override} Check`,
+            dc: dcMatch ? Number(dcMatch[1]) : null,
+        };
+    }
+
+    
     const clean = stripHtml(text).toLowerCase();
 
     const hasRollWord = /\b(roll|check|saving throw|save)\b/i.test(clean);
@@ -79,4 +104,18 @@ function capitalizeSkill(skill) {
 
 function escapeRegex(text) {
     return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function detectActionOverride(cleanText) {
+    for (const override of actionOverrides) {
+        for (const word of override.words) {
+            const regex = new RegExp(`\\b${escapeRegex(word)}\\b`, "i");
+
+            if (regex.test(cleanText)) {
+                return override.skill;
+            }
+        }
+    }
+
+    return null;
 }
