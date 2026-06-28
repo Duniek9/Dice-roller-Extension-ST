@@ -1,0 +1,214 @@
+:root {
+    --dice-color: #facc15;
+    --dice-glow-color: #7e22ce;
+    --dice-bg-color: #1e1b4b;
+    --dice-text-color: #ffffff;
+
+    --dice-button-bg: #7e22ce;
+    --dice-button-hover: #9d4edd;
+    --dice-button-text: #ffffff;
+
+    --dice-button-danger: #c62828;
+    --dice-button-danger-hover: #e53935;
+}
+.dice-popup.hidden,
+.dice-roll-request.hidden {
+    display: none;
+}
+
+.dice-popup {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: rgba(0, 0, 0, 0.78);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dice-popup-box {
+    width: 420px;
+    padding: 28px;
+    border-radius: 18px;
+    background: var(--dice-bg-color);
+    color: var(--dice-text-color);
+    border: 2px solid var(--dice-color);
+    box-shadow: 0 0 35px var(--dice-glow-color);
+    text-align: center;
+}
+
+.dice-popup-die {
+    width: 150px;
+    height: 150px;
+    margin: 22px auto;
+    border: 3px solid var(--dice-color);
+    color: var(--dice-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 54px;
+    font-weight: bold;
+    background: rgba(0, 0, 0, 0.25);
+    clip-path: polygon(
+        50% 0%,
+        90% 20%,
+        100% 60%,
+        75% 100%,
+        25% 100%,
+        0% 60%,
+        10% 20%
+    );
+}
+
+.dice-popup-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.dice-roll-request {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%);
+    z-index: 99998;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 999px;
+    background: var(--dice-bg-color);
+    color: var(--dice-text-color);
+    border: 2px solid var(--dice-color);
+    box-shadow: 0 0 25px var(--dice-glow-color);
+}
+
+/* Buttons */
+.dice-popup button,
+.dice-roll-request button {
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    background: var(--dice-button-bg);
+    color: var(--dice-button-text);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dice-popup button:hover,
+.dice-roll-request button:hover {
+    background: var(--dice-button-hover);
+    transform: translateY(-1px);
+}
+
+.dice-popup button:active,
+.dice-roll-request button:active {
+    transform: translateY(1px);
+}
+
+/* X dismiss button */
+#dice_roll_request_dismiss {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border-radius: 50%;
+    background: var(--dice-button-danger);
+}
+
+#dice_roll_request_dismiss:hover {
+    background: var(--dice-button-danger-hover);
+}
+
+.dice-rolling {
+    animation: diceShake 0.08s infinite;
+}
+
+@keyframes diceShake {
+    0% {
+        transform: rotate(-8deg) scale(1.05);
+    }
+
+    50% {
+        transform: rotate(8deg) scale(1.12);
+    }
+
+    100% {
+        transform: rotate(-8deg) scale(1.05);
+    }
+}
+
+.dice-popup button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
+.dice-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.dice-settings-section {
+    padding: 10px;
+    border: 1px solid var(--dice-color);
+    border-radius: 10px;
+}
+
+.dice-settings-section h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.dice-setting-row,
+.dice-radio-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.dice-radio-row {
+    justify-content: flex-start;
+}
+
+.dice-color-picker {
+    width: 60px;
+    height: 34px;
+    cursor: pointer;
+}
+
+#dice_setting_max_rolls {
+    width: 70px;
+}
+
+#dice_setting_reset_theme {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    background: var(--dice-button-bg);
+    color: var(--dice-button-text);
+    cursor: pointer;
+}
+
+#dice_popup_rolls_left {
+    opacity: 0.8;
+    font-size: 0.9em;
+}
+
+#dice_setting_max_rolls {
+    width: 70px;
+    padding: 6px 8px;
+
+    background: var(--dice-bg-color);
+    color: var(--dice-text-color);
+
+    border: 1px solid var(--dice-color);
+    border-radius: 6px;
+
+    text-align: center;
+}
