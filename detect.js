@@ -57,35 +57,56 @@ export function initRollDetection(showRollRequest) {
 function detectRollRequest(text) {
     const clean = stripHtml(text).toLowerCase();
 
-    const hasRollWord = /\b(roll|check|saving throw|save)\b/i.test(clean);
+    const hasRollWord = /\b(roll|check|saving throw|save|d20)\b/i.test(clean);
     if (!hasRollWord) return null;
 
-    const override = detectActionOverride(clean);
+    const dcMatch = clean.match(/\bdc\s*(\d{1,2})\b/i);
+    const dc = dcMatch ? Number(dcMatch[1]) : null;
 
-    if (override) {
-        const dcMatch = clean.match(/\bdc\s*(\d{1,2})\b/i);
+    // 1. Explicit D&D skill/ability mention always wins
+    const explicitSkill = detectExplicitSkill(clean);
 
+    if (explicitSkill) {
         return {
             sides: 20,
-            reason: `${override} Check`,
-            dc: dcMatch ? Number(dcMatch[1]) : null,
+            reason: `${explicitSkill} Check`,
+            dc,
         };
     }
 
-    const skill = skills.find(skillName => {
+    // 2. Only guess from action words if no explicit skill was found
+    const override = detectActionOverride(clean);
+
+    if (override) {
+        return {
+            sides: 20,
+            reason: `${override} Check`,
+            dc,
+        };
+    }
+
+    // 3. Generic fallback when the AI asks for a d20 roll but no skill is clear
+    if (/\bd20\b/i.test(clean) || /\broll\b/i.test(clean)) {
+        return {
+            sides: 20,
+            reason: "D20 Roll",
+            dc,
+        };
+    }
+
+    return null;
+}
+
+function detectExplicitSkill(cleanText) {
+    for (const skillName of skills) {
         const regex = new RegExp(`\\b${escapeRegex(skillName)}\\b`, "i");
-        return regex.test(clean);
-    });
 
-    if (!skill) return null;
+        if (regex.test(cleanText)) {
+            return capitalizeSkill(skillName);
+        }
+    }
 
-    const dcMatch = clean.match(/\bdc\s*(\d{1,2})\b/i);
-
-    return {
-        sides: 20,
-        reason: capitalizeSkill(skill) + " Check",
-        dc: dcMatch ? Number(dcMatch[1]) : null,
-    };
+    return null;
 }
 
 function stripHtml(text) {
