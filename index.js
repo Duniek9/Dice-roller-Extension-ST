@@ -6,6 +6,9 @@ import { createDicePopup, showRollRequest } from "./popup.js";
 import { createDiceSettingsMenu } from "./settings.js";
 import { initRollDetection } from "./detect.js";
 
+alert("Dice Roller index.js loaded");
+console.log("🎲 Dice Roller index.js reached");
+
 jQuery(async () => {
     const settings = getDiceSettings(extension_settings);
 
