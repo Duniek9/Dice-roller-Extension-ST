@@ -100,28 +100,22 @@ function detectRollRequest(text) {
 function detectExplicitSkill(cleanText) {
     const lines = cleanText.split(/\n+/);
 
-    // 1. Best case: roll/check and skill are on the same line
+    // 1. Same line, close enough
     for (const line of lines) {
-        const rollWord = findRollWord(line);
-        if (!rollWord) continue;
-
-        const skill = findSkill(line);
-        if (skill) return capitalizeSkill(skill);
+        const skill = detectSkillByDistance(line, 8);
+        if (skill) return skill;
     }
 
-    // 2. Second case: same sentence
+    // 2. Same sentence, close enough
     const sentences = cleanText.split(/[.!?]+/);
 
     for (const sentence of sentences) {
-        const rollWord = findRollWord(sentence);
-        if (!rollWord) continue;
-
-        const skill = findSkill(sentence);
-        if (skill) return capitalizeSkill(skill);
+        const skill = detectSkillByDistance(sentence, 8);
+        if (skill) return skill;
     }
 
-    // 3. Fallback: close word distance in full message
-    return detectSkillByDistance(cleanText);
+    // 3. Full message fallback, stricter
+    return detectSkillByDistance(cleanText, 6);
 }
 
 function stripHtml(text) {
@@ -172,7 +166,7 @@ function findSkill(text) {
     return null;
 }
 
-function detectSkillByDistance(text) {
+function detectSkillByDistance(text, maxDistance = 6) {
     const words = text
         .toLowerCase()
         .replace(/[^\w\s]/g, " ")
@@ -207,7 +201,7 @@ function detectSkillByDistance(text) {
 
     // Tune this number if needed.
     // 6 means: "roll/check" and the skill must be within ~6 words.
-    if (bestDistance <= 6) {
+    if (bestDistance <= maxDistance) {
         return capitalizeSkill(bestSkill);
     }
 
