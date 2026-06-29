@@ -227,14 +227,24 @@
     }
 
     .dice-roll-request {
-        width: calc(100vw - 24px);
-        bottom: 12px;
-        border-radius: 16px;
-        flex-wrap: wrap;
-        justify-content: center;
-        text-align: center;
-    }
+    position: fixed !important;
 
+    top: 96px !important;
+    bottom: auto !important;
+
+    left: 12px !important;
+    right: 12px !important;
+    width: auto !important;
+
+    transform: none !important;
+
+    border-radius: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+
+    z-index: 99999999 !important;
+}
     #dice_roll_request_text {
         width: 100%;
     }
