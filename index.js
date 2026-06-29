@@ -9,7 +9,7 @@ import { initRollDetection } from "./detect.js";
 alert("Dice Roller index.js loaded");
 console.log("🎲 Dice Roller index.js reached");
 
-jQuery(async () => {
+async function startDiceRoller() {
     try {
         console.log("🎲 Dice Roller starting...");
 
@@ -38,31 +38,36 @@ jQuery(async () => {
 
         console.log("✅ testDiceRoll registered");
 
-        $("body").append(`
-            <button id="dice_mobile_test"
-                style="
-                    position:fixed;
-                    right:10px;
-                    bottom:120px;
-                    z-index:999999;
-                    padding:12px;
-                    background:#7e22ce;
-                    color:white;
-                    border:none;
-                    border-radius:10px;
-                ">
-                🎲 Test Dice
-            </button>
-        `);
+        if (!document.getElementById("dice_mobile_test")) {
+            $("body").append(`
+                <button id="dice_mobile_test"
+                    style="
+                        position:fixed;
+                        right:10px;
+                        bottom:120px;
+                        z-index:999999;
+                        padding:12px;
+                        background:#7e22ce;
+                        color:white;
+                        border:none;
+                        border-radius:10px;
+                    ">
+                    🎲 Test Dice
+                </button>
+            `);
 
-        $("#dice_mobile_test").on("click", () => {
-            window.testDiceRoll();
-        });
+            $("#dice_mobile_test").on("click", () => {
+                window.testDiceRoll();
+            });
 
-        console.log("✅ Test button created");
+            console.log("✅ Test button created");
+        }
 
+        console.log("🎲 Dice Roller fully loaded");
     } catch (err) {
-        console.error("🎲 Startup crashed:", err);
-        alert(err.stack);
+        console.error("🎲 Dice Roller startup crashed:", err);
+        alert("Dice Roller crashed: " + err.message);
     }
-});
+}
+
+startDiceRoller();
