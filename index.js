@@ -11,22 +11,22 @@ console.log("🎲 Dice Roller index.js reached");
 
 async function startDiceRoller() {
     try {
-        console.log("🎲 Dice Roller starting...");
+        alert("Dice startup begin");
 
         const settings = getDiceSettings(extension_settings);
-        console.log("✅ Settings loaded");
+        alert("Settings loaded");
 
         applyDiceTheme(settings);
-        console.log("✅ Theme applied");
+        alert("Theme applied");
 
         createDiceSettingsMenu(extension_settings, settings);
-        console.log("✅ Menu created");
+        alert("Menu created");
 
         createDicePopup(settings);
-        console.log("✅ Popup created");
+        alert("Popup created");
 
         initRollDetection(showRollRequest);
-        console.log("✅ Detection initialized");
+        alert("Detection initialized");
 
         window.testDiceRoll = () => {
             showRollRequest({
@@ -36,37 +36,9 @@ async function startDiceRoller() {
             });
         };
 
-        console.log("✅ testDiceRoll registered");
-
-        if (!document.getElementById("dice_mobile_test")) {
-            $("body").append(`
-                <button id="dice_mobile_test"
-                    style="
-                        position:fixed;
-                        right:10px;
-                        bottom:120px;
-                        z-index:999999;
-                        padding:12px;
-                        background:#7e22ce;
-                        color:white;
-                        border:none;
-                        border-radius:10px;
-                    ">
-                    🎲 Test Dice
-                </button>
-            `);
-
-            $("#dice_mobile_test").on("click", () => {
-                window.testDiceRoll();
-            });
-
-            console.log("✅ Test button created");
-        }
-
-        console.log("🎲 Dice Roller fully loaded");
+        alert("testDiceRoll registered");
     } catch (err) {
-        console.error("🎲 Dice Roller startup crashed:", err);
-        alert("Dice Roller crashed: " + err.message);
+        alert("Dice crashed: " + err.message);
     }
 }
 
