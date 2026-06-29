@@ -98,15 +98,30 @@ function detectRollRequest(text) {
 }
 
 function detectExplicitSkill(cleanText) {
-    for (const skillName of skills) {
-        const regex = new RegExp(`\\b${escapeRegex(skillName)}\\b`, "i");
+    const lines = cleanText.split(/\n+/);
 
-        if (regex.test(cleanText)) {
-            return capitalizeSkill(skillName);
-        }
+    // 1. Best case: roll/check and skill are on the same line
+    for (const line of lines) {
+        const rollWord = findRollWord(line);
+        if (!rollWord) continue;
+
+        const skill = findSkill(line);
+        if (skill) return capitalizeSkill(skill);
     }
 
-    return null;
+    // 2. Second case: same sentence
+    const sentences = cleanText.split(/[.!?]+/);
+
+    for (const sentence of sentences) {
+        const rollWord = findRollWord(sentence);
+        if (!rollWord) continue;
+
+        const skill = findSkill(sentence);
+        if (skill) return capitalizeSkill(skill);
+    }
+
+    // 3. Fallback: close word distance in full message
+    return detectSkillByDistance(cleanText);
 }
 
 function stripHtml(text) {
@@ -135,6 +150,65 @@ function detectActionOverride(cleanText) {
                 return override.skill;
             }
         }
+    }
+
+    return null;
+}
+
+function findRollWord(text) {
+    const match = text.match(/\b(roll|check|saving throw|save|d20)\b/i);
+    return match ? match[0] : null;
+}
+
+function findSkill(text) {
+    for (const skillName of skills) {
+        const regex = new RegExp(`\\b${escapeRegex(skillName)}\\b`, "i");
+
+        if (regex.test(text)) {
+            return skillName;
+        }
+    }
+
+    return null;
+}
+
+function detectSkillByDistance(text) {
+    const words = text
+        .toLowerCase()
+        .replace(/[^\w\s]/g, " ")
+        .split(/\s+/)
+        .filter(Boolean);
+
+    const rollWords = ["roll", "check", "save", "d20"];
+
+    let bestSkill = null;
+    let bestDistance = Infinity;
+
+    for (let i = 0; i < words.length; i++) {
+        if (!rollWords.includes(words[i])) continue;
+
+        for (const skillName of skills) {
+            const skillWords = skillName.split(" ");
+
+            for (let j = 0; j < words.length; j++) {
+                const candidate = words.slice(j, j + skillWords.length).join(" ");
+
+                if (candidate !== skillName) continue;
+
+                const distance = Math.abs(i - j);
+
+                if (distance < bestDistance) {
+                    bestDistance = distance;
+                    bestSkill = skillName;
+                }
+            }
+        }
+    }
+
+    // Tune this number if needed.
+    // 6 means: "roll/check" and the skill must be within ~6 words.
+    if (bestDistance <= 6) {
+        return capitalizeSkill(bestSkill);
     }
 
     return null;
