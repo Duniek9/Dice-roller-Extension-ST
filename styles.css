@@ -212,3 +212,40 @@
 
     text-align: center;
 }
+
+@media (max-width: 600px) {
+    .dice-popup-box {
+        width: calc(100vw - 32px);
+        max-width: 420px;
+        padding: 20px;
+    }
+
+    .dice-popup-die {
+        width: 120px;
+        height: 120px;
+        font-size: 42px;
+    }
+
+    .dice-roll-request {
+        width: calc(100vw - 24px);
+        bottom: 12px;
+        border-radius: 16px;
+        flex-wrap: wrap;
+        justify-content: center;
+        text-align: center;
+    }
+
+    #dice_roll_request_text {
+        width: 100%;
+    }
+
+    .dice-popup-buttons {
+        flex-wrap: wrap;
+    }
+
+    .dice-popup button,
+    .dice-roll-request button {
+        font-size: 14px;
+        padding: 9px 14px;
+    }
+}
