@@ -10,20 +10,59 @@ alert("Dice Roller index.js loaded");
 console.log("🎲 Dice Roller index.js reached");
 
 jQuery(async () => {
-    const settings = getDiceSettings(extension_settings);
+    try {
+        console.log("🎲 Dice Roller starting...");
 
-    applyDiceTheme(settings);
-    createDiceSettingsMenu(extension_settings, settings);
-    createDicePopup(settings);
-    initRollDetection(showRollRequest);
+        const settings = getDiceSettings(extension_settings);
+        console.log("✅ Settings loaded");
 
-    window.testDiceRoll = () => {
-        showRollRequest({
-            sides: 20,
-            reason: "Perception Check",
-            dc: 15,
+        applyDiceTheme(settings);
+        console.log("✅ Theme applied");
+
+        createDiceSettingsMenu(extension_settings, settings);
+        console.log("✅ Menu created");
+
+        createDicePopup(settings);
+        console.log("✅ Popup created");
+
+        initRollDetection(showRollRequest);
+        console.log("✅ Detection initialized");
+
+        window.testDiceRoll = () => {
+            showRollRequest({
+                sides: 20,
+                reason: "Mobile Test",
+                dc: 15,
+            });
+        };
+
+        console.log("✅ testDiceRoll registered");
+
+        $("body").append(`
+            <button id="dice_mobile_test"
+                style="
+                    position:fixed;
+                    right:10px;
+                    bottom:120px;
+                    z-index:999999;
+                    padding:12px;
+                    background:#7e22ce;
+                    color:white;
+                    border:none;
+                    border-radius:10px;
+                ">
+                🎲 Test Dice
+            </button>
+        `);
+
+        $("#dice_mobile_test").on("click", () => {
+            window.testDiceRoll();
         });
-    };
 
-    console.log("🎲 Dice Roller loaded", settings);
+        console.log("✅ Test button created");
+
+    } catch (err) {
+        console.error("🎲 Startup crashed:", err);
+        alert(err.stack);
+    }
 });
